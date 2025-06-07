@@ -1,0 +1,22 @@
+import pyttsx3
+import PyPDF2
+from tkinter.filedialog import askopenfilename
+from tkinter import Tk
+Tk().withdraw()
+book = askopenfilename(filetypes=[("PDF Files", "*.pdf")])
+if not book:
+    print("No file selected.")
+    exit()
+with open(book, 'rb') as file:
+    pdfreader = PyPDF2.PdfReader(file)
+    pages = len(pdfreader.pages)
+    player = pyttsx3.init()
+    player.setProperty('rate', 150) 
+    voices = player.getProperty('voices')
+    player.setProperty('voice', voices[1].id)  
+    for num in range(pages):
+        page = pdfreader.pages[num]
+        text = page.extract_text()
+        if text:
+            player.say(text)
+    player.runAndWait()
